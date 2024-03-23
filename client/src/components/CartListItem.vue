@@ -4,6 +4,7 @@ import type { ProductType } from "@/types/product";
 import { ref, watch } from "vue";
 import debounce from "lodash.debounce";
 import { useCartStore } from "@/stores/cart";
+import emitter from "@/utils/emitter";
 
 const props = defineProps<{
   data: ProductType;
@@ -15,6 +16,22 @@ const cartStore = useCartStore();
 
 const updateQty = (quantity: number) => {
   qty.value = quantity;
+};
+
+const deleteProduct = async () => {
+  return cartStore.deleteProduct(props.data._id)
+  .then(() => {
+    emitter.emit('alert',{
+      apparence: 'success',
+      text: 'product_deleted'
+    })
+  });
+};
+
+const askForDelete = () => {
+  const agree = confirm("დარწმუნებული ხართ რომ გსურთ წაშლა?");
+  if(agree)
+    deleteProduct();
 };
 
 watch(
@@ -41,6 +58,7 @@ watch(
     </div>
     <div class="cart-item__actions">
       <QuantitySelector :qty="qty" @change="updateQty" />
+      <img class="cart-item__delete" src="@/assets/img/trash.svg" @click="askForDelete"/>
     </div>
   </div>
 </template>
@@ -56,6 +74,10 @@ watch(
   align-items: center;
   padding: 10px;
   margin-bottom: 10px;
+  transition: background .3s;
+  &:hover{
+    background: darken(#fff,3%);
+  }
   &__image {
     width: 60px;
     img {
@@ -81,6 +103,13 @@ watch(
     gap: 15px;
   }
   &__actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+  }
+  &__delete{
+    cursor: pointer;
   }
 }
 </style>

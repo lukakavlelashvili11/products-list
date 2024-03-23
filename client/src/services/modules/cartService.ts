@@ -1,4 +1,4 @@
-import { post, get, put } from "../axios";
+import { post, get, put, remove } from "../axios";
 import type { ProductType } from "@/types/product";
 import type { CartProductType } from "@/types/cart";
 
@@ -29,3 +29,10 @@ export const updateCart = async (data: {
 export const getCart = async (id: string) => {
   return get<{ products: CartProductType[] }>(`/cart/${id}`);
 };
+
+export const deleteProductFromCart = async (data: {
+  cartId: string;
+  productId: string;
+}) => {
+  return remove(`/cart/${data.cartId}/products/${data.productId}`);
+}

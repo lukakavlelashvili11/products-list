@@ -3,6 +3,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useCartStore } from "@/stores/cart";
 import { computed, onMounted } from "vue";
 import CartList from "@/components/CartList.vue";
+import Button from "@/components/base/Button.vue";
 
 const route = useRoute();
 const cartStore = useCartStore();
@@ -28,14 +29,22 @@ onMounted(async () => {
         <CartList :products="products" />
       </div>
       <div class="cart__checkout">
-        <span>Sum:</span>
+        <span>გადახდა:</span>
         <ul class="cart__list">
           <li class="cart__list-item" v-for="data in products">
-            <span>{{ data.product.title }} x {{ data.quantity }}</span>
+            <span
+              >{{ data.product.title }}<span style="color: red">x</span
+              >{{ data.quantity }}</span
+            >
             <span>{{ data.product.price * data.quantity }} ₾</span>
           </li>
         </ul>
-        <span>jamshi: {{ totalPrice }}</span>
+        <div class="cart__total">
+          <span>ჯამში: {{ totalPrice }} ₾</span>
+        </div>
+        <div class="cart__pay">
+          <Button full-width label="გადახდა"/>
+        </div>
       </div>
     </div>
   </template>
@@ -50,16 +59,27 @@ onMounted(async () => {
 .cart {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   padding: 40px;
   gap: 30px;
   &__list {
     padding: 0px;
+    margin: 10px 0px;
     &-item {
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 5px;
+      font-family: medium;
+      font-size: 14px;
     }
+  }
+  &__pay{
+    margin-top: 30px;
+  }
+  &__total {
+    margin-top: 30px;
   }
   &__products {
     // width: 60%;
@@ -75,8 +95,7 @@ onMounted(async () => {
   }
   &__checkout {
     width: 40%;
-    height: 200px;
-    box-shadow: 0px 0px 3px gray;
+    box-shadow: 0px 0px 5px rgb(199, 199, 199);
     border-radius: 8px;
     padding: 15px;
   }

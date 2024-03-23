@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import Cookies from "js-cookie";
-import { createCart, addToCart, getCart, updateCart } from "@/services/modules/cartService";
+import { createCart, addToCart, getCart, updateCart, deleteProductFromCart } from "@/services/modules/cartService";
 import type { ProductType } from "@/types/product";
 import type { CartProductType } from "@/types/cart";
 
@@ -60,6 +60,18 @@ export const useCartStore = defineStore("cart", {
         await updateCart({
           productId: data.productId,
           qty: data.qty,
+          cartId: this.cartId,
+        });
+        await this.getCart(this.cartId);
+      }catch(err){
+        console.log(err);
+      }
+    },
+
+    async deleteProduct(productId: string){
+      try{
+        await deleteProductFromCart({
+          productId: productId,
           cartId: this.cartId,
         });
         await this.getCart(this.cartId);

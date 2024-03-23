@@ -4,10 +4,12 @@ import { computed } from "vue";
 const props = defineProps<{
   label?: string;
   apparence?: "normal" | "info";
+  fullWidth?: boolean;
 }>();
 
 const classes = computed(() => [
   props.apparence ? props.apparence : "normal",
+  props.fullWidth && 'full-width',
 ]);
 </script>
 <template>
@@ -31,6 +33,9 @@ const classes = computed(() => [
     font-size: 14px;
     font-weight: 500;
   }
+}
+.full-width{
+  width: 100%;
 }
 
 .info {
