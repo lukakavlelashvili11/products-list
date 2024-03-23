@@ -1,1 +1,6 @@
-// export type CartType = 
+import type { ProductType } from "./product";
+
+export type CartProductType = {
+  product: ProductType;
+  quantity: number;
+};

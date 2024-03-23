@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useProductStore } from "@/stores/product";
 import { useCartStore } from "@/stores/cart";
 import Button from "@/components/base/Button.vue";
@@ -10,12 +10,16 @@ import QuantitySelector from "@/components/base/QuantitySelector.vue";
 const productStore = useProductStore();
 const cartStore = useCartStore();
 const route = useRoute();
-
 const product = computed(() => productStore.singleProductDataGetter);
+
+const qty = ref(1);
 
 const addToCart = () => {
   cartStore
-    .addToCart(product.value._id)
+    .addToCart({
+      productId: product.value._id,
+      qty: qty.value
+    })
     .then(() => {
       emitter.emit("alert", {
         text: "added_to_cart",
@@ -32,6 +36,10 @@ const addToCart = () => {
     });
 };
 
+const updateQty = (quantity: number) => {
+  qty.value = quantity;
+}
+
 onMounted(async () => {
   await productStore.getSingleProduct({ id: route.params.id as string });
 });
@@ -45,7 +53,7 @@ onMounted(async () => {
     <div class="product__content">
       <h2 class="product__title">{{ product.title }}</h2>
       <span class="product__price">{{ product.price }} ₾</span>
-      <QuantitySelector/>
+      <QuantitySelector @change="updateQty"/>
       <div class="product__actions">
         <Button label="კალათაში დამატება" apparence="info" @click="addToCart" />
         <Button label="ყიდვა" />

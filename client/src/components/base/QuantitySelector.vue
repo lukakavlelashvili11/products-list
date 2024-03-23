@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-const count = ref(1);
+const props = defineProps<{
+  qty?: number;
+}>();
+
+const count = ref(props.qty || 1);
+const emits = defineEmits(["change"]);
 
 type ActionType = "inc" | "dec";
 
@@ -11,6 +16,8 @@ const changeCount = (action: ActionType) => {
   } else if (action === "inc") {
     count.value = ++count.value;
   }
+
+  emits("change", count.value);
 };
 </script>
 
@@ -53,7 +60,7 @@ const changeCount = (action: ActionType) => {
   &__changer {
     cursor: pointer;
   }
-  *{
+  * {
     user-select: none;
   }
 }

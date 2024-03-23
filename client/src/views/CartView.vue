@@ -2,35 +2,48 @@
 import { useRoute, useRouter } from "vue-router";
 import { useCartStore } from "@/stores/cart";
 import { computed, onMounted } from "vue";
-import Product from "@/components/Product.vue";
+import CartList from "@/components/CartList.vue";
 
 const route = useRoute();
 const cartStore = useCartStore();
 const cartId = computed(() => cartStore.cartId);
 const products = computed(() => cartStore.products);
+const totalPrice = computed(() => {
+  let totalPrice = 0;
+  for (const item of products.value) {
+    totalPrice += item.product.price * item.quantity;
+  }
+  return totalPrice;
+});
 
 onMounted(async () => {
-  if(cartId.value)
-    await cartStore.getCart(cartId.value);
+  if (cartId.value) await cartStore.getCart(cartId.value);
 });
 </script>
 
 <template>
   <template v-if="cartId">
-  <div class="cart">
-    <div class="cart__products">
-      <div class="cart__products-item" v-for="product in products">
-        <Product :data="product" />
+    <div class="cart">
+      <div class="cart__products">
+        <CartList :products="products" />
+      </div>
+      <div class="cart__checkout">
+        <span>Sum:</span>
+        <ul class="cart__list">
+          <li class="cart__list-item" v-for="data in products">
+            <span>{{ data.product.title }} x {{ data.quantity }}</span>
+            <span>{{ data.product.price * data.quantity }} ₾</span>
+          </li>
+        </ul>
+        <span>jamshi: {{ totalPrice }}</span>
       </div>
     </div>
-    <div class="cart__checkout"></div>
-  </div>
-</template>
-<template v-else>
-  <div class="cart-is-empty">
-    <h1 >კალათა ცარიელია</h1>
-  </div>
-</template>
+  </template>
+  <template v-else>
+    <div class="cart-is-empty">
+      <h1>კალათა ცარიელია</h1>
+    </div>
+  </template>
 </template>
 
 <style lang="scss" scoped>
@@ -39,6 +52,15 @@ onMounted(async () => {
   justify-content: space-between;
   padding: 40px;
   gap: 30px;
+  &__list {
+    padding: 0px;
+    &-item {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
   &__products {
     // width: 60%;
     display: flex;
@@ -56,10 +78,11 @@ onMounted(async () => {
     height: 200px;
     box-shadow: 0px 0px 3px gray;
     border-radius: 8px;
+    padding: 15px;
   }
 }
 
-.cart-is-empty{
+.cart-is-empty {
   display: flex;
   justify-content: center;
   margin-top: 100px;

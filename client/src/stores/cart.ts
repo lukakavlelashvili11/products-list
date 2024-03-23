@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
 import Cookies from "js-cookie";
-import { createCart, addToCart, getCart } from "@/services/modules/cartService";
+import { createCart, addToCart, getCart, updateCart } from "@/services/modules/cartService";
 import type { ProductType } from "@/types/product";
+import type { CartProductType } from "@/types/cart";
 
 interface State {
   cartId: string;
-  products: ProductType[];
+  products: CartProductType[];
 }
 
 export const useCartStore = defineStore("cart", {
@@ -26,7 +27,7 @@ export const useCartStore = defineStore("cart", {
         .catch((err) => console.error(err));
     },
 
-    async addToCart(productId: string) {
+    async addToCart(data: { productId: string; qty: number }) {
       if (!this.cartId) {
         try {
           await this.createCart();
@@ -35,20 +36,36 @@ export const useCartStore = defineStore("cart", {
         }
       }
 
-      return addToCart({ productId, cartId: this.cartId }).then((resp) =>
-        console.log(resp)
-      );
+      return addToCart({
+        productId: data.productId,
+        qty: data.qty,
+        cartId: this.cartId,
+      }).then((resp) => console.log(resp));
     },
 
     async getCart(id: string) {
-      return getCart(id).then((resp) => {
-        this.$patch({
-          products: resp,
+      return getCart(id)
+        .then((resp) => {
+          this.$patch({
+            products: resp.products,
+          });
+        })
+        .catch((resp) => {
+          console.error(resp);
         });
-      })
-      .catch(resp => {
-        console.error(resp);
-      });
     },
+
+    async updateCart(data: { productId: string; qty: number }){
+      try{
+        await updateCart({
+          productId: data.productId,
+          qty: data.qty,
+          cartId: this.cartId,
+        });
+        await this.getCart(this.cartId);
+      }catch(err){
+        console.log(err);
+      }
+    }
   },
 });

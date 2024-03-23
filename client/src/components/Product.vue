@@ -30,13 +30,6 @@ defineProps<{
         <div class="product__price">
           <span><span>{{ data.price }}</span> <span>₾</span></span>
         </div>
-        <!-- <CartButton /> -->
-        <div class="product__actions">
-          <!--  -->
-          <div class="product__actions--right">
-            <!-- <CartButton /> -->
-          </div>
-        </div>
       </div>
     </div>
   </div>
