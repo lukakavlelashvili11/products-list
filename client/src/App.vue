@@ -9,9 +9,3 @@ import Alert from '@/components/base/Alert.vue';
   <RouterView />
   <Alert/>
 </template>
-
-<style>
-body{
-  background: white;
-}
-</style>

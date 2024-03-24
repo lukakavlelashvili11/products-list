@@ -1,15 +1,4 @@
 const Product = require("../models/product");
-const { getInitialData } = require("../utils/product");
-
-exports.addProductsInitialList = async (_, res) => {
-  try {
-    const data = await getInitialData();
-    await Product.create(data);
-    res.status(200).send("Initial data created successfully");
-  } catch (err) {
-    res.status(500).send(err);
-  }
-};
 
 exports.getProductList = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -43,7 +32,6 @@ exports.getProductById = async (req, res) => {
 
     res.json(data);
   } catch (error) {
-    console.error("Error fetching data by ID:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "server error" });
   }
 };

@@ -1,5 +1,4 @@
 import { post, get, put, remove } from "../axios";
-import type { ProductType } from "@/types/product";
 import type { CartProductType } from "@/types/cart";
 
 export const createCart = async () => {

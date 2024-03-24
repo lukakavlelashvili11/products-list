@@ -22,19 +22,6 @@ exports.getCart = async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    const productsWithQuantity = [];
-
-    // Iterate through each item in the cart's products array
-    for (const item of cart.products) {
-      // Extract product details and quantity
-      const { product, quantity } = item;
-
-      // Push product details and quantity to the array
-      productsWithQuantity.push({ product, quantity });
-    }
-
-    // Respond with the array of products with their quantities
-    // res.json({ products: productsWithQuantity });
     res.json(cart);
   } catch (error) {
     res.status(500).json({ message: "server error" });
@@ -103,21 +90,23 @@ exports.updateCart = async (req, res) => {
   }
 };
 
-exports.deleteProduct= async (req, res) => {
+exports.deleteProduct = async (req, res) => {
   try {
     const { cartId, productId } = req.params;
 
     const cart = await Cart.findById(cartId);
     if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
+      return res.status(404).json({ message: "Cart not found" });
     }
 
-    cart.products = cart.products.filter(item => !item.product.equals(productId));
+    cart.products = cart.products.filter(
+      (item) => !item.product.equals(productId)
+    );
 
     await cart.save();
 
     res.json(cart);
   } catch (error) {
-    res.status(500).json({ message: 'server error' });
+    res.status(500).json({ message: "server error" });
   }
 };

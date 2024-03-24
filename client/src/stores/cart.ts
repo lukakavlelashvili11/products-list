@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import Cookies from "js-cookie";
 import { createCart, addToCart, getCart, updateCart, deleteProductFromCart } from "@/services/modules/cartService";
-import type { ProductType } from "@/types/product";
 import type { CartProductType } from "@/types/cart";
 
 interface State {

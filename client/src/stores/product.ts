@@ -19,7 +19,7 @@ export const useProductStore = defineStore("product", {
 
   getters: {
     productListDataGetter: (state) => state.productListData,
-    productListGetter: (state) => state.productListData.data,
+    productListGetter: (state) => state.productListData.data || [],
     singleProductDataGetter: (state)=> state.singleProductData,
   },
 

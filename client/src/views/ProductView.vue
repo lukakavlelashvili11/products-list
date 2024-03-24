@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import { useProductStore } from "@/stores/product";
 import { useCartStore } from "@/stores/cart";
@@ -10,35 +10,35 @@ import QuantitySelector from "@/components/base/QuantitySelector.vue";
 const productStore = useProductStore();
 const cartStore = useCartStore();
 const route = useRoute();
+const router = useRouter();
 const product = computed(() => productStore.singleProductDataGetter);
 
 const qty = ref(1);
 
-const addToCart = () => {
-  cartStore
+const addToCart = async (buy = false) => {
+  return cartStore
     .addToCart({
       productId: product.value._id,
-      qty: qty.value
+      qty: qty.value,
     })
     .then(() => {
-      emitter.emit("alert", {
-        text: "added_to_cart",
-        apparence: "success",
-      });
-    })
-    .catch((err) => {
-      if (err.response.status === 400) {
+      console.log(buy,'buttt');
+      if (!buy)
         emitter.emit("alert", {
-          text: "product_already_exists",
-          apparence: "danger",
+          text: "added_to_cart",
+          apparence: "success",
         });
-      }
     });
+};
+
+const buy = async () => {
+  await addToCart(true);
+  router.push("/checkout");
 };
 
 const updateQty = (quantity: number) => {
   qty.value = quantity;
-}
+};
 
 onMounted(async () => {
   await productStore.getSingleProduct({ id: route.params.id as string });
@@ -53,10 +53,10 @@ onMounted(async () => {
     <div class="product__content">
       <h2 class="product__title">{{ product.title }}</h2>
       <span class="product__price">{{ product.price }} ₾</span>
-      <QuantitySelector @change="updateQty"/>
+      <QuantitySelector @change="updateQty" />
       <div class="product__actions">
-        <Button label="კალათაში დამატება" apparence="info" @click="addToCart" />
-        <Button label="ყიდვა" />
+        <Button label="კალათაში დამატება" apparence="info" @click="() => addToCart(false)" />
+        <Button label="ყიდვა" @click="buy" />
       </div>
     </div>
   </div>

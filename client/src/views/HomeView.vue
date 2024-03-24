@@ -35,18 +35,25 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="products">
-    <div class="products__inner">
-      <div class="products__item" v-for="(product, i) in products" :key="i">
-        <Product :data="product" />
+  <template v-if="products.length">
+    <div class="products">
+      <div class="products__inner">
+        <div class="products__item" v-for="(product, i) in products" :key="i">
+          <Product :data="product" />
+        </div>
       </div>
+      <Pagination
+        :current-page="paginateData.page"
+        :items-per-page="paginateData.limit"
+        :total-items="productData.totalItems"
+      />
     </div>
-    <Pagination
-      :current-page="paginateData.page"
-      :items-per-page="paginateData.limit"
-      :total-items="productData.totalItems"
-    />
-  </div>
+  </template>
+  <template v-else>
+    <div class="products-is-empty">
+      <h1>Run api to see products</h1>
+    </div>
+  </template>
 </template>
 
 <style lang="scss" scoped>
@@ -65,5 +72,12 @@ onMounted(async () => {
     flex: 0 0 calc(20% - 15px);
     margin-bottom: 15px;
   }
+}
+
+.products-is-empty {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+  font-family: medium;
 }
 </style>

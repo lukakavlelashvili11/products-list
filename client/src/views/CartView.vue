@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { useCartStore } from "@/stores/cart";
 import { computed, onMounted } from "vue";
 import CartList from "@/components/CartList.vue";
 import Button from "@/components/base/Button.vue";
 
-const route = useRoute();
+const router = useRouter();
 const cartStore = useCartStore();
 const cartId = computed(() => cartStore.cartId);
 const products = computed(() => cartStore.products);
@@ -16,6 +16,10 @@ const totalPrice = computed(() => {
   }
   return totalPrice;
 });
+
+const goToCheckout = () => {
+  router.push("/checkout");
+};
 
 onMounted(async () => {
   if (cartId.value) await cartStore.getCart(cartId.value);
@@ -33,9 +37,9 @@ onMounted(async () => {
         <ul class="cart__list">
           <li class="cart__list-item" v-for="data in products">
             <span
-              >{{ data.product.title }}<span style="color: red">x</span
-              >{{ data.quantity }}</span
-            >
+              >{{ data.product.title }}<span style="color: gray;"> x </span
+              >{{ data.quantity }}
+            </span>
             <span>{{ data.product.price * data.quantity }} ₾</span>
           </li>
         </ul>
@@ -43,7 +47,7 @@ onMounted(async () => {
           <span>ჯამში: {{ totalPrice }} ₾</span>
         </div>
         <div class="cart__pay">
-          <Button full-width label="გადახდა"/>
+          <Button full-width label="გადახდა" @click="goToCheckout" />
         </div>
       </div>
     </div>
@@ -75,7 +79,7 @@ onMounted(async () => {
       font-size: 14px;
     }
   }
-  &__pay{
+  &__pay {
     margin-top: 30px;
   }
   &__total {
